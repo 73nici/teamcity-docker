@@ -1,0 +1,37 @@
+version: "3.8"
+
+services:
+  db:
+    container_name: teamcitydb
+    image: mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: "password"
+      MYSQL_USER: "teamcity"
+      MYSQL_PASSWORD: "password"
+      MYSQL_DATABASE: "teamcity"
+    volumes:
+      - ./data/db:/var/lib/mysql
+
+  teamcityserver:
+    container_name: teamcityserver
+    image: jetbrains/teamcity-server
+    depends_on:
+      - db
+    ports:
+      - "8111:8111"
+    volumes:
+      - ./data/teamcity_server:/data/teamcity_server/datadir
+      - ./opt/teamcity_server/logs:/opt/teamcity/logs
+
+  teamcityagent:
+    container_name: teamcityagent
+    image: jetbrains/teamcity-agent
+    depends_on:
+      - teamcityserver
+    environment:
+      AGENT_NAME: "Docker Agent"
+      SERVER_URL: "http://teamcityserver:8111"
+    volumes:
+      - ./data/teamcity_agent/conf:/data/teamcity_agent/conf
