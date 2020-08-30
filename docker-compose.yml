@@ -13,6 +13,7 @@ services:
       MYSQL_DATABASE: "teamcity"
     volumes:
       - ./data/db:/var/lib/mysql
+    restart: always
 
   teamcityserver:
     container_name: teamcityserver
@@ -24,6 +25,7 @@ services:
     volumes:
       - ./data/teamcity_server:/data/teamcity_server/datadir
       - ./opt/teamcity_server/logs:/opt/teamcity/logs
+    restart: always
 
   teamcityagent:
     container_name: teamcityagent
@@ -35,3 +37,4 @@ services:
       SERVER_URL: "http://teamcityserver:8111"
     volumes:
       - ./data/teamcity_agent/conf:/data/teamcity_agent/conf
+    restart: always
